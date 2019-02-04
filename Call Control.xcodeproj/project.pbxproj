@@ -13,7 +13,14 @@
 		0A66551B22026A5B00CE1650 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 0A66551922026A5B00CE1650 /* LaunchScreen.storyboard */; };
 		0A66552722026BE000CE1650 /* RulesViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0A66552622026BE000CE1650 /* RulesViewController.swift */; };
 		0A66552B22026CF800CE1650 /* Rule.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0A66552A22026CF800CE1650 /* Rule.swift */; };
-		0A66553122028B9300CE1650 /* RuleCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0A66553022028B9300CE1650 /* RuleCell.swift */; };
+		0A6655352203564F00CE1650 /* SettingsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0A6655342203564F00CE1650 /* SettingsViewController.swift */; };
+		0A665538220359EB00CE1650 /* Colors.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 0A665537220359EB00CE1650 /* Colors.xcassets */; };
+		0A66553A22037A1000CE1650 /* EditRuleViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0A66553922037A1000CE1650 /* EditRuleViewController.swift */; };
+		0A66553C220490F800CE1650 /* AppSystemColorSettingsCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0A66553B220490F800CE1650 /* AppSystemColorSettingsCell.swift */; };
+		0A66553E2204A14B00CE1650 /* Settings.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0A66553D2204A14B00CE1650 /* Settings.swift */; };
+		0AEA173B22050A8A003A7DE4 /* RoundedButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0AEA173A22050A8A003A7DE4 /* RoundedButton.swift */; };
+		0AEA173F2206458E003A7DE4 /* NumberFormattingLogic.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0AEA173E2206458E003A7DE4 /* NumberFormattingLogic.swift */; };
+		2B6440C92CA564FA7871280D /* Pods_Call_Control.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 85B7209D64296E5F7C2D18B3 /* Pods_Call_Control.framework */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -25,7 +32,16 @@
 		0A66551C22026A5B00CE1650 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		0A66552622026BE000CE1650 /* RulesViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RulesViewController.swift; sourceTree = "<group>"; };
 		0A66552A22026CF800CE1650 /* Rule.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Rule.swift; sourceTree = "<group>"; };
-		0A66553022028B9300CE1650 /* RuleCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RuleCell.swift; sourceTree = "<group>"; };
+		0A6655342203564F00CE1650 /* SettingsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsViewController.swift; sourceTree = "<group>"; };
+		0A665537220359EB00CE1650 /* Colors.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Colors.xcassets; sourceTree = "<group>"; };
+		0A66553922037A1000CE1650 /* EditRuleViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EditRuleViewController.swift; sourceTree = "<group>"; };
+		0A66553B220490F800CE1650 /* AppSystemColorSettingsCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppSystemColorSettingsCell.swift; sourceTree = "<group>"; };
+		0A66553D2204A14B00CE1650 /* Settings.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Settings.swift; sourceTree = "<group>"; };
+		0AEA173A22050A8A003A7DE4 /* RoundedButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RoundedButton.swift; sourceTree = "<group>"; };
+		0AEA173E2206458E003A7DE4 /* NumberFormattingLogic.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NumberFormattingLogic.swift; sourceTree = "<group>"; };
+		35F7B04FBEFB82349A8A212C /* Pods-Call Control.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Call Control.release.xcconfig"; path = "Pods/Target Support Files/Pods-Call Control/Pods-Call Control.release.xcconfig"; sourceTree = "<group>"; };
+		85B7209D64296E5F7C2D18B3 /* Pods_Call_Control.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Call_Control.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		EF02FDB285103C31965115A4 /* Pods-Call Control.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Call Control.debug.xcconfig"; path = "Pods/Target Support Files/Pods-Call Control/Pods-Call Control.debug.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -33,6 +49,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				2B6440C92CA564FA7871280D /* Pods_Call_Control.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -44,6 +61,8 @@
 			children = (
 				0A66550F22026A5B00CE1650 /* Call Control */,
 				0A66550E22026A5B00CE1650 /* Products */,
+				A3AFA3A661AC2AB6F7EB36A6 /* Pods */,
+				9AAFDAE83E3EE8BA46379954 /* Frameworks */,
 			);
 			sourceTree = "<group>";
 		};
@@ -64,6 +83,7 @@
 				0A66552222026AA500CE1650 /* View */,
 				0A66551922026A5B00CE1650 /* LaunchScreen.storyboard */,
 				0A66551C22026A5B00CE1650 /* Info.plist */,
+				0A66551022026A5B00CE1650 /* AppDelegate.swift */,
 			);
 			path = "Call Control";
 			sourceTree = "<group>";
@@ -72,6 +92,7 @@
 			isa = PBXGroup;
 			children = (
 				0A66551422026A5B00CE1650 /* Main.storyboard */,
+				0AEA173A22050A8A003A7DE4 /* RoundedButton.swift */,
 			);
 			path = View;
 			sourceTree = "<group>";
@@ -80,6 +101,8 @@
 			isa = PBXGroup;
 			children = (
 				0A66552A22026CF800CE1650 /* Rule.swift */,
+				0A66553D2204A14B00CE1650 /* Settings.swift */,
+				0AEA173E2206458E003A7DE4 /* NumberFormattingLogic.swift */,
 			);
 			path = Model;
 			sourceTree = "<group>";
@@ -88,7 +111,9 @@
 			isa = PBXGroup;
 			children = (
 				0A66552622026BE000CE1650 /* RulesViewController.swift */,
-				0A66553022028B9300CE1650 /* RuleCell.swift */,
+				0A6655342203564F00CE1650 /* SettingsViewController.swift */,
+				0A66553922037A1000CE1650 /* EditRuleViewController.swift */,
+				0A66553B220490F800CE1650 /* AppSystemColorSettingsCell.swift */,
 			);
 			path = Controller;
 			sourceTree = "<group>";
@@ -97,9 +122,26 @@
 			isa = PBXGroup;
 			children = (
 				0A66551722026A5B00CE1650 /* Assets.xcassets */,
-				0A66551022026A5B00CE1650 /* AppDelegate.swift */,
+				0A665537220359EB00CE1650 /* Colors.xcassets */,
 			);
 			path = "Supporting Files";
+			sourceTree = "<group>";
+		};
+		9AAFDAE83E3EE8BA46379954 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				85B7209D64296E5F7C2D18B3 /* Pods_Call_Control.framework */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		A3AFA3A661AC2AB6F7EB36A6 /* Pods */ = {
+			isa = PBXGroup;
+			children = (
+				EF02FDB285103C31965115A4 /* Pods-Call Control.debug.xcconfig */,
+				35F7B04FBEFB82349A8A212C /* Pods-Call Control.release.xcconfig */,
+			);
+			name = Pods;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -109,9 +151,11 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = 0A66551F22026A5B00CE1650 /* Build configuration list for PBXNativeTarget "Call Control" */;
 			buildPhases = (
+				CB577FE67AA771E3BCEC2576 /* [CP] Check Pods Manifest.lock */,
 				0A66550922026A5B00CE1650 /* Sources */,
 				0A66550A22026A5B00CE1650 /* Frameworks */,
 				0A66550B22026A5B00CE1650 /* Resources */,
+				BF5CD2E076300DA488EF5B39 /* [CP] Embed Pods Frameworks */,
 			);
 			buildRules = (
 			);
@@ -161,6 +205,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				0A66551B22026A5B00CE1650 /* LaunchScreen.storyboard in Resources */,
+				0A665538220359EB00CE1650 /* Colors.xcassets in Resources */,
 				0A66551822026A5B00CE1650 /* Assets.xcassets in Resources */,
 				0A66551622026A5B00CE1650 /* Main.storyboard in Resources */,
 			);
@@ -168,14 +213,66 @@
 		};
 /* End PBXResourcesBuildPhase section */
 
+/* Begin PBXShellScriptBuildPhase section */
+		BF5CD2E076300DA488EF5B39 /* [CP] Embed Pods Frameworks */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+				"${SRCROOT}/Pods/Target Support Files/Pods-Call Control/Pods-Call Control-frameworks.sh",
+				"${BUILT_PRODUCTS_DIR}/ChameleonFramework/ChameleonFramework.framework",
+			);
+			name = "[CP] Embed Pods Frameworks";
+			outputFileListPaths = (
+			);
+			outputPaths = (
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/ChameleonFramework.framework",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-Call Control/Pods-Call Control-frameworks.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
+		CB577FE67AA771E3BCEC2576 /* [CP] Check Pods Manifest.lock */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+				"${PODS_PODFILE_DIR_PATH}/Podfile.lock",
+				"${PODS_ROOT}/Manifest.lock",
+			);
+			name = "[CP] Check Pods Manifest.lock";
+			outputFileListPaths = (
+			);
+			outputPaths = (
+				"$(DERIVED_FILE_DIR)/Pods-Call Control-checkManifestLockResult.txt",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
+			showEnvVarsInLog = 0;
+		};
+/* End PBXShellScriptBuildPhase section */
+
 /* Begin PBXSourcesBuildPhase section */
 		0A66550922026A5B00CE1650 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
 				0A66552B22026CF800CE1650 /* Rule.swift in Sources */,
-				0A66553122028B9300CE1650 /* RuleCell.swift in Sources */,
+				0A66553C220490F800CE1650 /* AppSystemColorSettingsCell.swift in Sources */,
 				0A66552722026BE000CE1650 /* RulesViewController.swift in Sources */,
+				0AEA173B22050A8A003A7DE4 /* RoundedButton.swift in Sources */,
+				0A6655352203564F00CE1650 /* SettingsViewController.swift in Sources */,
+				0A66553E2204A14B00CE1650 /* Settings.swift in Sources */,
+				0AEA173F2206458E003A7DE4 /* NumberFormattingLogic.swift in Sources */,
+				0A66553A22037A1000CE1650 /* EditRuleViewController.swift in Sources */,
 				0A66551122026A5B00CE1650 /* AppDelegate.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -320,6 +417,7 @@
 		};
 		0A66552022026A5B00CE1650 /* Debug */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = EF02FDB285103C31965115A4 /* Pods-Call Control.debug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_STYLE = Automatic;
@@ -338,6 +436,7 @@
 		};
 		0A66552122026A5B00CE1650 /* Release */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 35F7B04FBEFB82349A8A212C /* Pods-Call Control.release.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_STYLE = Automatic;

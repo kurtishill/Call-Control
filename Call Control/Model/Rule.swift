@@ -9,13 +9,13 @@
 import Foundation
 
 struct Rule {
-    var rule: String = ""
+    var ruleTitle: String = ""
+    var rulePattern: String = ""
     var notes: String?
-    var active: Bool = false
+    var active: Bool = true
     
-    init() {
-        rule = "This is a really really really really long rule"
-        notes = "These are some notes"
-        active = false
+    init(withTitle title: String, withPattern pattern: String) {
+        self.ruleTitle = title
+        self.rulePattern = pattern
     }
 }
