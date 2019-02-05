@@ -20,6 +20,8 @@
 		0A66553E2204A14B00CE1650 /* Settings.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0A66553D2204A14B00CE1650 /* Settings.swift */; };
 		0AEA173B22050A8A003A7DE4 /* RoundedButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0AEA173A22050A8A003A7DE4 /* RoundedButton.swift */; };
 		0AEA173F2206458E003A7DE4 /* NumberFormattingLogic.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0AEA173E2206458E003A7DE4 /* NumberFormattingLogic.swift */; };
+		0AEA17412208DAEA003A7DE4 /* RuleStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0AEA17402208DAEA003A7DE4 /* RuleStore.swift */; };
+		0AEA17432209084D003A7DE4 /* WelcomeScreenViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0AEA17422209084D003A7DE4 /* WelcomeScreenViewController.swift */; };
 		2B6440C92CA564FA7871280D /* Pods_Call_Control.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 85B7209D64296E5F7C2D18B3 /* Pods_Call_Control.framework */; };
 /* End PBXBuildFile section */
 
@@ -39,6 +41,8 @@
 		0A66553D2204A14B00CE1650 /* Settings.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Settings.swift; sourceTree = "<group>"; };
 		0AEA173A22050A8A003A7DE4 /* RoundedButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RoundedButton.swift; sourceTree = "<group>"; };
 		0AEA173E2206458E003A7DE4 /* NumberFormattingLogic.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NumberFormattingLogic.swift; sourceTree = "<group>"; };
+		0AEA17402208DAEA003A7DE4 /* RuleStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RuleStore.swift; sourceTree = "<group>"; };
+		0AEA17422209084D003A7DE4 /* WelcomeScreenViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WelcomeScreenViewController.swift; sourceTree = "<group>"; };
 		35F7B04FBEFB82349A8A212C /* Pods-Call Control.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Call Control.release.xcconfig"; path = "Pods/Target Support Files/Pods-Call Control/Pods-Call Control.release.xcconfig"; sourceTree = "<group>"; };
 		85B7209D64296E5F7C2D18B3 /* Pods_Call_Control.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Call_Control.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		EF02FDB285103C31965115A4 /* Pods-Call Control.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Call Control.debug.xcconfig"; path = "Pods/Target Support Files/Pods-Call Control/Pods-Call Control.debug.xcconfig"; sourceTree = "<group>"; };
@@ -103,6 +107,7 @@
 				0A66552A22026CF800CE1650 /* Rule.swift */,
 				0A66553D2204A14B00CE1650 /* Settings.swift */,
 				0AEA173E2206458E003A7DE4 /* NumberFormattingLogic.swift */,
+				0AEA17402208DAEA003A7DE4 /* RuleStore.swift */,
 			);
 			path = Model;
 			sourceTree = "<group>";
@@ -114,6 +119,7 @@
 				0A6655342203564F00CE1650 /* SettingsViewController.swift */,
 				0A66553922037A1000CE1650 /* EditRuleViewController.swift */,
 				0A66553B220490F800CE1650 /* AppSystemColorSettingsCell.swift */,
+				0AEA17422209084D003A7DE4 /* WelcomeScreenViewController.swift */,
 			);
 			path = Controller;
 			sourceTree = "<group>";
@@ -269,9 +275,11 @@
 				0A66553C220490F800CE1650 /* AppSystemColorSettingsCell.swift in Sources */,
 				0A66552722026BE000CE1650 /* RulesViewController.swift in Sources */,
 				0AEA173B22050A8A003A7DE4 /* RoundedButton.swift in Sources */,
+				0AEA17432209084D003A7DE4 /* WelcomeScreenViewController.swift in Sources */,
 				0A6655352203564F00CE1650 /* SettingsViewController.swift in Sources */,
 				0A66553E2204A14B00CE1650 /* Settings.swift in Sources */,
 				0AEA173F2206458E003A7DE4 /* NumberFormattingLogic.swift in Sources */,
+				0AEA17412208DAEA003A7DE4 /* RuleStore.swift in Sources */,
 				0A66553A22037A1000CE1650 /* EditRuleViewController.swift in Sources */,
 				0A66551122026A5B00CE1650 /* AppDelegate.swift in Sources */,
 			);

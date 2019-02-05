@@ -11,18 +11,24 @@ import ChameleonFramework
 
 class RulesViewController: UITableViewController, UITextFieldDelegate {
     
-    var rules: [Rule]?
+    var ruleStore: RuleStore!
 
     override func viewDidLoad() {
         super.viewDidLoad()
+        
+//        UserDefaults.standard.removeObject(forKey: "first-time")
+        
+        if !UserDefaults.standard.bool(forKey: "first-time") {
+            
+            performSegue(withIdentifier: "goToSplashScreen", sender: self)
+            
+        }
         
         navigationItem.leftBarButtonItem = editButtonItem
         
         tableView.rowHeight = 65
         tableView.allowsSelection = false
         tableView.allowsSelectionDuringEditing = true
-        
-        rules = [Rule]()
         
     }
     
@@ -64,9 +70,7 @@ class RulesViewController: UITableViewController, UITextFieldDelegate {
             guard let rule = alert.textFields?[0].text,
                 let pattern = alert.textFields?[1].text else { return }
             
-            let newRule = Rule(withTitle: rule, withPattern: pattern)
-            
-            self.rules?.append(newRule)
+            self.ruleStore.createRule(withTitle: rule, withPattern: pattern)
             
             self.tableView.reloadData()
             
@@ -134,7 +138,7 @@ class RulesViewController: UITableViewController, UITextFieldDelegate {
 
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
 
-        return rules?.count ?? 1
+        return ruleStore.allRules.count
         
     }
 
@@ -143,30 +147,27 @@ class RulesViewController: UITableViewController, UITextFieldDelegate {
         
         let cell = tableView.dequeueReusableCell(withIdentifier: "blockedNumberCell", for: indexPath)
 
-        // if a rule exists at that index
-        if let rule = rules?[indexPath.row] {
-            
-            cell.textLabel!.text = rule.ruleTitle
-            cell.textLabel!.adjustsFontForContentSizeCategory = true
-            cell.textLabel!.adjustsFontSizeToFitWidth = true
-            
-            cell.detailTextLabel!.text = NumberFormattingLogic.displayNumberFormat(number: rule.rulePattern)
-            cell.detailTextLabel!.adjustsFontForContentSizeCategory = true
-            cell.detailTextLabel!.adjustsFontSizeToFitWidth = true
-            cell.detailTextLabel!.textColor = UIColor.lightGray
-            
-            let switchView = UISwitch(frame: CGRect.zero)
-            switchView.setOn(rule.active, animated: false)
-            switchView.tag = indexPath.row
-            switchView.onTintColor = UIColor(named: Settings.instance.primaryColorDark)
-            switchView.addTarget(self,
-                                 action: #selector(self.switchChanged),
-                                 for: .valueChanged)
-            cell.accessoryView = switchView
-            
-            cell.editingAccessoryType = .detailDisclosureButton
-            
-        }
+        let rule = ruleStore.allRules[indexPath.row]
+        
+        cell.textLabel!.text = rule.ruleTitle
+        cell.textLabel!.adjustsFontForContentSizeCategory = true
+        cell.textLabel!.adjustsFontSizeToFitWidth = true
+        
+        cell.detailTextLabel!.text = NumberFormattingLogic.displayNumberFormat(number: rule.rulePattern)
+        cell.detailTextLabel!.adjustsFontForContentSizeCategory = true
+        cell.detailTextLabel!.adjustsFontSizeToFitWidth = true
+        cell.detailTextLabel!.textColor = UIColor.lightGray
+        
+        let switchView = UISwitch(frame: CGRect.zero)
+        switchView.setOn(rule.active, animated: false)
+        switchView.tag = indexPath.row
+        switchView.onTintColor = UIColor(named: Settings.instance.primaryColorDark)
+        switchView.addTarget(self,
+                             action: #selector(self.switchChanged),
+                             for: .valueChanged)
+        cell.accessoryView = switchView
+        
+        cell.editingAccessoryType = .detailDisclosureButton
 
         return cell
         
@@ -188,12 +189,10 @@ class RulesViewController: UITableViewController, UITextFieldDelegate {
     
     @objc func switchChanged(_ sender: UISwitch) {
         
-        if let rule = rules?[sender.tag] {
+        let rule = ruleStore.allRules[sender.tag]
             
-            rules?[sender.tag].active = !rule.active
-            
-        }
-
+        ruleStore.allRules[sender.tag].active = !rule.active
+        
     }
     
     @objc func infoButtonTapped(_ sender: UIButton) {
@@ -207,30 +206,30 @@ class RulesViewController: UITableViewController, UITextFieldDelegate {
     override func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCell.EditingStyle, forRowAt indexPath: IndexPath) {
         
         if editingStyle == .delete {
-            if let rule = rules?[indexPath.row] {
-                let title = "Delete \(rule.ruleTitle)"
-                let message = "Are you sure you want to delete this rule?"
+            let rule = ruleStore.allRules[indexPath.row]
+            
+            let title = "Delete \(rule.ruleTitle)"
+            let message = "Are you sure you want to delete this rule?"
+            
+            let ac = UIAlertController(title: title, message: message, preferredStyle: .actionSheet)
+            
+            let cancelAction = UIAlertAction(title: "Cancel", style: .cancel, handler: nil)
+            
+            ac.addAction(cancelAction)
+            
+            let deleteAction = UIAlertAction(title: "Delete", style: .destructive) {
+                action in
                 
-                let ac = UIAlertController(title: title, message: message, preferredStyle: .actionSheet)
+                // remove rule from list of rules
+                self.ruleStore.removeRule(at: indexPath.row)
                 
-                let cancelAction = UIAlertAction(title: "Cancel", style: .cancel, handler: nil)
-                
-                ac.addAction(cancelAction)
-                
-                let deleteAction = UIAlertAction(title: "Delete", style: .destructive) {
-                    action in
-                    
-                    // remove rule from list of rules
-                    self.rules?.remove(at: indexPath.row)
-                    
-                    // remove rule from table view
-                    tableView.deleteRows(at: [indexPath], with: .automatic)
-                }
-                
-                ac.addAction(deleteAction)
-                
-                present(ac, animated: true, completion: nil)
+                // remove rule from table view
+                tableView.deleteRows(at: [indexPath], with: .automatic)
             }
+            
+            ac.addAction(deleteAction)
+            
+            present(ac, animated: true, completion: nil)
         }
     }
     
@@ -242,7 +241,7 @@ class RulesViewController: UITableViewController, UITextFieldDelegate {
         if let destination = segue.destination as? EditRuleViewController {
         
             if let indexPath = sender as? IndexPath {
-                let rule = rules?[indexPath.row]
+                let rule = ruleStore.allRules[indexPath.row]
                 
                 destination.rule = rule
             }
