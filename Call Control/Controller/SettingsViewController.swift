@@ -118,6 +118,8 @@ class SettingsViewController: UITableViewController, AppSystemColorSettingsCellD
         
         Settings.instance.toggleOverrideContacts()
         
+        Settings.instance.save()
+        
     }
     
     // MARK: - AppSystemColorSettingsCellDelegate method
@@ -134,6 +136,8 @@ class SettingsViewController: UITableViewController, AppSystemColorSettingsCellD
         
         navigationController?.navigationBar.layer.add(fadeTextAnimation, forKey: "fadeText")
         navigationItem.title = "Settings"
+        
+        Settings.instance.save()
         
     }
     

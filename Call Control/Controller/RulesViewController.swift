@@ -8,6 +8,7 @@
 
 import UIKit
 import ChameleonFramework
+import RealmSwift
 
 class RulesViewController: UITableViewController, UITextFieldDelegate {
     
@@ -138,7 +139,7 @@ class RulesViewController: UITableViewController, UITextFieldDelegate {
 
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
 
-        return ruleStore.allRules.count
+        return ruleStore.allRules?.count ?? 0
         
     }
 
@@ -147,27 +148,29 @@ class RulesViewController: UITableViewController, UITextFieldDelegate {
         
         let cell = tableView.dequeueReusableCell(withIdentifier: "blockedNumberCell", for: indexPath)
 
-        let rule = ruleStore.allRules[indexPath.row]
+        if let rule = ruleStore.allRules?[indexPath.row] {
         
-        cell.textLabel!.text = rule.ruleTitle
-        cell.textLabel!.adjustsFontForContentSizeCategory = true
-        cell.textLabel!.adjustsFontSizeToFitWidth = true
-        
-        cell.detailTextLabel!.text = NumberFormattingLogic.displayNumberFormat(number: rule.rulePattern)
-        cell.detailTextLabel!.adjustsFontForContentSizeCategory = true
-        cell.detailTextLabel!.adjustsFontSizeToFitWidth = true
-        cell.detailTextLabel!.textColor = UIColor.lightGray
-        
-        let switchView = UISwitch(frame: CGRect.zero)
-        switchView.setOn(rule.active, animated: false)
-        switchView.tag = indexPath.row
-        switchView.onTintColor = UIColor(named: Settings.instance.primaryColorDark)
-        switchView.addTarget(self,
-                             action: #selector(self.switchChanged),
-                             for: .valueChanged)
-        cell.accessoryView = switchView
-        
-        cell.editingAccessoryType = .detailDisclosureButton
+            cell.textLabel!.text = rule.ruleTitle
+            cell.textLabel!.adjustsFontForContentSizeCategory = true
+            cell.textLabel!.adjustsFontSizeToFitWidth = true
+            
+            cell.detailTextLabel!.text = NumberFormattingLogic.displayNumberFormat(number: rule.rulePattern)
+            cell.detailTextLabel!.adjustsFontForContentSizeCategory = true
+            cell.detailTextLabel!.adjustsFontSizeToFitWidth = true
+            cell.detailTextLabel!.textColor = UIColor.lightGray
+            
+            let switchView = UISwitch(frame: CGRect.zero)
+            switchView.setOn(rule.active, animated: false)
+            switchView.tag = indexPath.row
+            switchView.onTintColor = UIColor(named: Settings.instance.primaryColorDark)
+            switchView.addTarget(self,
+                                 action: #selector(self.switchChanged),
+                                 for: .valueChanged)
+            cell.accessoryView = switchView
+            
+            cell.editingAccessoryType = .detailDisclosureButton
+            
+        }
 
         return cell
         
@@ -189,9 +192,17 @@ class RulesViewController: UITableViewController, UITextFieldDelegate {
     
     @objc func switchChanged(_ sender: UISwitch) {
         
-        let rule = ruleStore.allRules[sender.tag]
+        if let rule = ruleStore.allRules?[sender.tag] {
+            let realm = try! Realm()
+            do {
+                try realm.write {
+                    rule.active = !rule.active
+                }
+            } catch {
+                print("Error saving active status \(error)")
+            }
             
-        ruleStore.allRules[sender.tag].active = !rule.active
+        }
         
     }
     
@@ -201,35 +212,35 @@ class RulesViewController: UITableViewController, UITextFieldDelegate {
         
     }
 
-    
-//     Override to support editing the table view.
     override func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCell.EditingStyle, forRowAt indexPath: IndexPath) {
         
         if editingStyle == .delete {
-            let rule = ruleStore.allRules[indexPath.row]
+            if let rule = ruleStore.allRules?[indexPath.row] {
             
-            let title = "Delete \(rule.ruleTitle)"
-            let message = "Are you sure you want to delete this rule?"
-            
-            let ac = UIAlertController(title: title, message: message, preferredStyle: .actionSheet)
-            
-            let cancelAction = UIAlertAction(title: "Cancel", style: .cancel, handler: nil)
-            
-            ac.addAction(cancelAction)
-            
-            let deleteAction = UIAlertAction(title: "Delete", style: .destructive) {
-                action in
+                let title = "Delete \(rule.ruleTitle)"
+                let message = "Are you sure you want to delete this rule?"
                 
-                // remove rule from list of rules
-                self.ruleStore.removeRule(at: indexPath.row)
+                let ac = UIAlertController(title: title, message: message, preferredStyle: .actionSheet)
                 
-                // remove rule from table view
-                tableView.deleteRows(at: [indexPath], with: .automatic)
+                let cancelAction = UIAlertAction(title: "Cancel", style: .cancel, handler: nil)
+                
+                ac.addAction(cancelAction)
+                
+                let deleteAction = UIAlertAction(title: "Delete", style: .destructive) {
+                    action in
+                    
+                    // remove rule from list of rules
+                    self.ruleStore.removeRule(at: indexPath.row)
+                    
+                    // remove rule from table view
+                    tableView.deleteRows(at: [indexPath], with: .automatic)
+                }
+            
+                ac.addAction(deleteAction)
+            
+                present(ac, animated: true, completion: nil)
+                
             }
-            
-            ac.addAction(deleteAction)
-            
-            present(ac, animated: true, completion: nil)
         }
     }
     
@@ -241,9 +252,11 @@ class RulesViewController: UITableViewController, UITextFieldDelegate {
         if let destination = segue.destination as? EditRuleViewController {
         
             if let indexPath = sender as? IndexPath {
-                let rule = ruleStore.allRules[indexPath.row]
+                if let rule = ruleStore.allRules?[indexPath.row] {
                 
-                destination.rule = rule
+                    destination.rule = rule
+                    
+                }
             }
             
         }

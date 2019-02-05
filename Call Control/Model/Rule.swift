@@ -7,15 +7,12 @@
 //
 
 import Foundation
+import RealmSwift
 
-struct Rule {
-    var ruleTitle: String = ""
-    var rulePattern: String = ""
-    var notes: String?
-    var active: Bool = true
+class Rule: Object {
     
-    init(withTitle title: String, withPattern pattern: String) {
-        self.ruleTitle = title
-        self.rulePattern = pattern
-    }
+    @objc dynamic var ruleTitle: String = ""
+    @objc dynamic var rulePattern: String = ""
+    @objc dynamic var active: Bool = true
+    
 }

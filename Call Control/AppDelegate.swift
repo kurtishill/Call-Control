@@ -7,6 +7,7 @@
 //
 
 import UIKit
+import RealmSwift
 
 @UIApplicationMain
 class AppDelegate: UIResponder, UIApplicationDelegate {
@@ -17,12 +18,30 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
         // Override point for customization after application launch.
         
+        print(Realm.Configuration.defaultConfiguration.fileURL!)
+//        try! FileManager.default.removeItem(at: Realm.Configuration.defaultConfiguration.fileURL!)
+        
+        // Only need to worry about Realm failing on the first intialization
+        do {
+            _ = try Realm()
+        } catch {
+            print("Error initializing Realm: \(error)")
+        }
+        
+        
+        // Set up rule store for app
         let ruleStore = RuleStore()
         
         let navController = window!.rootViewController as! UINavigationController
         let rulesController = navController.topViewController as! RulesViewController
         
         rulesController.ruleStore = ruleStore
+        
+        // Load rules into ruleStore from Realm
+        rulesController.ruleStore.load()
+        
+        // Load settings from Realm
+        Settings.instance.load()
         
         return true
     }
