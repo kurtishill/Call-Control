@@ -22,10 +22,6 @@ class RuleStore: Object {
         return newRule
     }
     
-    func removeRule(at index: Int) {
-        delete(at: index)
-    }
-    
     func save(rule: Rule) {
         
         let realm = try! Realm()
@@ -37,6 +33,27 @@ class RuleStore: Object {
         } catch {
             print("Error saving context: \(error)")
         }
+    }
+    
+    func update(oldRule: Rule, newRule: Rule) -> Bool {
+        if let ruleIndex = allRules?.index(of: oldRule) {
+        
+            let realm = try! Realm()
+            guard let rule = allRules?[ruleIndex] else { return false }
+            
+            do {
+                try realm.write {
+                    rule.ruleTitle = newRule.ruleTitle
+                    rule.rulePattern = newRule.rulePattern
+                    rule.active = newRule.active
+                }
+            } catch {
+                print("Error updating rule \(error)")
+                return false
+            }
+            return true
+        }
+        return false
     }
     
     func load() {

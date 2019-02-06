@@ -9,10 +9,24 @@
 import UIKit
 import ChameleonFramework
 import RealmSwift
+import SVProgressHUD
 
-class RulesViewController: UITableViewController, UITextFieldDelegate {
+class RulesViewController: UITableViewController, UITextFieldDelegate, UpdateRuleDelegate {
     
     var ruleStore: RuleStore!
+    
+    var didSuccessfulUpdate: Bool? {
+        didSet {
+            if didSuccessfulUpdate! {
+                let displayColor = UIColor(named: Settings.instance.primaryColorDark) ?? UIColor.green
+                let textColor = ContrastColorOf(displayColor, returnFlat: true)
+                SVProgressHUD.setBackgroundColor(displayColor)
+                SVProgressHUD.setForegroundColor(textColor)
+                SVProgressHUD.setMinimumDismissTimeInterval(TimeInterval(exactly: 1)!)
+                SVProgressHUD.showSuccess(withStatus: "Rule Updated")
+            }
+        }
+    }
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -111,27 +125,7 @@ class RulesViewController: UITableViewController, UITextFieldDelegate {
     // MARK: - UITextFieldDelegate methods
     
     func textField(_ textField: UITextField, shouldChangeCharactersIn range: NSRange, replacementString string: String) -> Bool {
-        if textField.tag == 0 {
-            if string == "" {
-                return true
-            }
-            return textField.text!.count < 15
-        } else {
-            if !CharacterSet.decimalDigits.isSuperset(of: CharacterSet(charactersIn: string)) {
-                return false
-            } else {
-                if textField.text!.count < 7 {
-                    textField.text = NumberFormattingLogic.formattedNumber(number: textField.text!, newCharacter: string)
-                    if string != "" {
-                        textField.text?.remove(at: textField.text!.index(before: (textField.text?.endIndex)!))
-                    }
-                    return true
-                } else if string == "" {
-                    return true
-                }
-                return false
-            }
-        }
+        return TextFieldController.textField(textField, shouldChangeCharactersIn: range, replacementString: string)
     }
     
     
@@ -230,7 +224,7 @@ class RulesViewController: UITableViewController, UITextFieldDelegate {
                     action in
                     
                     // remove rule from list of rules
-                    self.ruleStore.removeRule(at: indexPath.row)
+                    self.ruleStore.delete(at: indexPath.row)
                     
                     // remove rule from table view
                     tableView.deleteRows(at: [indexPath], with: .automatic)
@@ -255,12 +249,22 @@ class RulesViewController: UITableViewController, UITextFieldDelegate {
                 if let rule = ruleStore.allRules?[indexPath.row] {
                 
                     destination.rule = rule
+                    destination.delegate = self
                     
                 }
             }
             
         }
         
+    }
+    
+    // MARK: - Update Rule Delegate Method
+    func ruleUpdated(oldRule: Rule, newRule: Rule) -> Bool {
+        return ruleStore.update(oldRule: oldRule, newRule: newRule)
+    }
+    
+    func reportSuccess(_ success: Bool) {
+        didSuccessfulUpdate = success
     }
 
 }

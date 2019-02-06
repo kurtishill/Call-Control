@@ -327,13 +327,88 @@
                     <view key="view" contentMode="scaleToFill" id="NNI-mS-0qu">
                         <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <textField opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" textAlignment="center" minimumFontSize="17" clearButtonMode="whileEditing" translatesAutoresizingMaskIntoConstraints="NO" id="ucc-6N-69Y">
+                                <rect key="frame" x="47" y="168" width="280" height="30"/>
+                                <constraints>
+                                    <constraint firstAttribute="width" secondItem="ucc-6N-69Y" secondAttribute="height" multiplier="28:3" id="McB-X5-9JA"/>
+                                </constraints>
+                                <nil key="textColor"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="25"/>
+                                <textInputTraits key="textInputTraits"/>
+                            </textField>
+                            <textField opaque="NO" tag="1" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" textAlignment="center" minimumFontSize="17" clearButtonMode="whileEditing" translatesAutoresizingMaskIntoConstraints="NO" id="GEd-LU-ZQc">
+                                <rect key="frame" x="47" y="253" width="280" height="30"/>
+                                <constraints>
+                                    <constraint firstAttribute="width" secondItem="GEd-LU-ZQc" secondAttribute="height" multiplier="28:3" id="lX8-yF-H6w"/>
+                                </constraints>
+                                <nil key="textColor"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="35"/>
+                                <textInputTraits key="textInputTraits"/>
+                            </textField>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="cv3-A4-fWY" customClass="RoundedButton" customModule="Call_Control" customModuleProvider="target">
+                                <rect key="frame" x="96" y="441" width="183" height="43"/>
+                                <color key="backgroundColor" white="0.66666666666666663" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="43" id="ZWN-zm-sTA"/>
+                                </constraints>
+                                <state key="normal" title="Save">
+                                    <color key="titleColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                </state>
+                                <userDefinedRuntimeAttributes>
+                                    <userDefinedRuntimeAttribute type="boolean" keyPath="rounded" value="YES"/>
+                                </userDefinedRuntimeAttributes>
+                                <connections>
+                                    <action selector="saveButtonTapped:" destination="DR0-Kn-NBY" eventType="touchUpInside" id="3Tn-9p-Myy"/>
+                                </connections>
+                            </button>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="center" lineBreakMode="clip" numberOfLines="0" baselineAdjustment="alignBaselines" minimumScaleFactor="0.5" translatesAutoresizingMaskIntoConstraints="NO" id="J6Y-xm-BQl">
+                                <rect key="frame" x="47" y="343" width="280" height="18"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="15"/>
+                                <color key="textColor" white="0.33333333333333331" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                <nil key="highlightedColor"/>
+                            </label>
+                        </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                        <gestureRecognizers/>
+                        <constraints>
+                            <constraint firstItem="Q4D-LU-WIl" firstAttribute="trailing" secondItem="cv3-A4-fWY" secondAttribute="trailing" constant="96" id="9Xf-kl-fxs"/>
+                            <constraint firstItem="GEd-LU-ZQc" firstAttribute="top" secondItem="ucc-6N-69Y" secondAttribute="bottom" constant="55" id="BKA-75-MFs"/>
+                            <constraint firstItem="GEd-LU-ZQc" firstAttribute="leading" secondItem="Q4D-LU-WIl" secondAttribute="leading" constant="47" id="HFz-kK-Qhl"/>
+                            <constraint firstItem="J6Y-xm-BQl" firstAttribute="top" secondItem="GEd-LU-ZQc" secondAttribute="bottom" constant="60" id="Mf2-dB-LDk"/>
+                            <constraint firstItem="Q4D-LU-WIl" firstAttribute="trailing" secondItem="J6Y-xm-BQl" secondAttribute="trailing" constant="48" id="Mq4-Al-Bg5"/>
+                            <constraint firstItem="cv3-A4-fWY" firstAttribute="top" secondItem="J6Y-xm-BQl" secondAttribute="bottom" constant="80" id="Nf3-e4-ZUa"/>
+                            <constraint firstItem="GEd-LU-ZQc" firstAttribute="top" secondItem="ucc-6N-69Y" secondAttribute="bottom" constant="55" id="WYO-pd-fRi"/>
+                            <constraint firstItem="Q4D-LU-WIl" firstAttribute="bottom" secondItem="cv3-A4-fWY" secondAttribute="bottom" constant="183" id="Y8h-5F-r1e"/>
+                            <constraint firstItem="Q4D-LU-WIl" firstAttribute="trailing" secondItem="GEd-LU-ZQc" secondAttribute="trailing" constant="48" id="b5L-7j-eh6"/>
+                            <constraint firstItem="J6Y-xm-BQl" firstAttribute="leading" secondItem="Q4D-LU-WIl" secondAttribute="leading" constant="47" id="j4J-9D-cOD"/>
+                            <constraint firstItem="ucc-6N-69Y" firstAttribute="top" secondItem="Q4D-LU-WIl" secondAttribute="top" constant="52" id="orV-h0-nbL"/>
+                            <constraint firstItem="cv3-A4-fWY" firstAttribute="leading" secondItem="Q4D-LU-WIl" secondAttribute="leading" constant="96" id="pNY-nc-qa5"/>
+                            <constraint firstItem="ucc-6N-69Y" firstAttribute="leading" secondItem="Q4D-LU-WIl" secondAttribute="leading" constant="47" id="r0l-hD-R49"/>
+                            <constraint firstItem="J6Y-xm-BQl" firstAttribute="top" secondItem="GEd-LU-ZQc" secondAttribute="bottom" constant="60" id="sta-Ar-ATu"/>
+                            <constraint firstItem="Q4D-LU-WIl" firstAttribute="trailing" secondItem="ucc-6N-69Y" secondAttribute="trailing" constant="48" id="tyi-kl-JuA"/>
+                            <constraint firstItem="cv3-A4-fWY" firstAttribute="top" secondItem="J6Y-xm-BQl" secondAttribute="bottom" constant="80" id="u2w-mA-fwV"/>
+                            <constraint firstItem="Q4D-LU-WIl" firstAttribute="bottom" secondItem="cv3-A4-fWY" secondAttribute="bottom" constant="183" id="uKn-8w-Xsx"/>
+                        </constraints>
                         <viewLayoutGuide key="safeArea" id="Q4D-LU-WIl"/>
+                        <connections>
+                            <outletCollection property="gestureRecognizers" destination="Uar-X5-b3R" appends="YES" id="qnJ-tX-GeO"/>
+                        </connections>
                     </view>
+                    <connections>
+                        <outlet property="patternDescriptionLabel" destination="J6Y-xm-BQl" id="rYm-Os-bND"/>
+                        <outlet property="rulePatternTextField" destination="GEd-LU-ZQc" id="LY0-Bq-crP"/>
+                        <outlet property="ruleTitleTextField" destination="ucc-6N-69Y" id="CGD-Sj-UgY"/>
+                    </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="Zov-pQ-Obc" userLabel="First Responder" sceneMemberID="firstResponder"/>
+                <tapGestureRecognizer id="Uar-X5-b3R">
+                    <connections>
+                        <action selector="backgroundTapped:" destination="DR0-Kn-NBY" id="nLm-mg-Kt8"/>
+                    </connections>
+                </tapGestureRecognizer>
             </objects>
-            <point key="canvasLocation" x="825" y="649"/>
+            <point key="canvasLocation" x="824.79999999999995" y="648.12593703148434"/>
         </scene>
         <!--Navigation Controller-->
         <scene sceneID="NfV-ke-yO8">
