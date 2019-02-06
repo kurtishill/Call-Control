@@ -125,7 +125,9 @@ class RulesViewController: UITableViewController, UITextFieldDelegate, UpdateRul
     // MARK: - UITextFieldDelegate methods
     
     func textField(_ textField: UITextField, shouldChangeCharactersIn range: NSRange, replacementString string: String) -> Bool {
+        
         return TextFieldController.textField(textField, shouldChangeCharactersIn: range, replacementString: string)
+        
     }
     
     

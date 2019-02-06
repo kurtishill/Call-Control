@@ -22,6 +22,7 @@ class EditRuleViewController: UIViewController, UITextFieldDelegate {
     @IBOutlet weak var ruleTitleTextField: UITextField!
     @IBOutlet weak var rulePatternTextField: UITextField!
     @IBOutlet weak var patternDescriptionLabel: UILabel!
+    @IBOutlet weak var saveButton: RoundedButton!
     
     @IBAction func backgroundTapped(_ sender: UITapGestureRecognizer) {
         view.endEditing(true)
@@ -57,6 +58,9 @@ class EditRuleViewController: UIViewController, UITextFieldDelegate {
         ruleTitleTextField.delegate = self
         rulePatternTextField.delegate = self
         
+        ruleTitleTextField.addTarget(self, action: #selector(textDidChangeInEditingRule), for: .editingChanged)
+        rulePatternTextField.addTarget(self, action: #selector(textDidChangeInEditingRule), for: .editingChanged)
+        
         if let r = rule {
             ruleTitleTextField.text = r.ruleTitle
             
@@ -80,7 +84,35 @@ class EditRuleViewController: UIViewController, UITextFieldDelegate {
     }
     
     func textField(_ textField: UITextField, shouldChangeCharactersIn range: NSRange, replacementString string: String) -> Bool {
+        
         return TextFieldController.textField(textField, shouldChangeCharactersIn: range, replacementString: string)
+
+    }
+    
+    private func isValidRule(_ rule: String) -> Bool {
+        
+        return rule.count > 0
+        
+    }
+    
+    private func isValidNumber(_ number: String) -> Bool {
+        
+        return number.count >= 3 && number.count <= 7
+        
+    }
+    
+    @objc private func textDidChangeInEditingRule() {
+        
+        if let rule = ruleTitleTextField.text,
+            let pattern = rulePatternTextField.text {
+            saveButton.isEnabled = isValidRule(rule) && isValidNumber(pattern)
+            if saveButton.isEnabled {
+                saveButton.alpha = 1.0
+            } else {
+                saveButton.alpha = 0.5
+            }
+        }
+        
     }
 
 }
