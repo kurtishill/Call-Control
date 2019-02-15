@@ -36,6 +36,9 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         let rulesController = navController.topViewController as! RulesViewController
         
         rulesController.ruleStore = ruleStore
+        rulesController.numberDirectoryManager = NumberDirectoryManager()
+        rulesController.numberDirectoryManager.attachObserver(observer: rulesController)
+        rulesController.id = 0
         
         // Load rules into ruleStore from Realm
         rulesController.ruleStore.load()

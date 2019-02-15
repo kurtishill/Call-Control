@@ -11,9 +11,13 @@ import ChameleonFramework
 import RealmSwift
 import SVProgressHUD
 
-class RulesViewController: UITableViewController, UITextFieldDelegate, UpdateRuleDelegate {
+class RulesViewController: UITableViewController, UITextFieldDelegate, UpdateRuleDelegate, Observer {
     
     var ruleStore: RuleStore!
+    
+    var numberDirectoryManager: NumberDirectoryManager!
+    
+    var selectedRule: Rule?
     
     var didSuccessfulUpdate: Bool? {
         didSet {
@@ -82,12 +86,55 @@ class RulesViewController: UITableViewController, UITextFieldDelegate, UpdateRul
         let addAction = UIAlertAction(title: "Add Rule", style: .default) {
             action in
             
-            guard let rule = alert.textFields?[0].text,
+            guard let title = alert.textFields?[0].text,
                 let pattern = alert.textFields?[1].text else { return }
+         
             
-            self.ruleStore.createRule(withTitle: rule, withPattern: pattern)
+            // Manually disable UI because ProgressHUD won't display unless the functionality behind it is in the background
+            self.view.isUserInteractionEnabled = false
+            self.navigationController?.navigationBar.isUserInteractionEnabled = false
+
+            DispatchQueue.global(qos: .background).async {
             
-            self.tableView.reloadData()
+                self.ruleStore.createRule(withTitle: title, withPattern: pattern, withManager: self.numberDirectoryManager, onSaving: {
+                    
+                    DispatchQueue.main.async {
+                        
+                        SVProgressHUD.dismiss() {
+                            
+                            let displayColor = UIColor.darkGray
+                            let textColor = ContrastColorOf(displayColor, returnFlat: true)
+                            SVProgressHUD.setBackgroundColor(displayColor)
+                            SVProgressHUD.setForegroundColor(textColor)
+                            SVProgressHUD.show(withStatus: "Block list saving to phone.\nThis may take up to a minute...")
+                            
+                        }
+                        
+                    }
+                    
+                }) {
+
+                    DispatchQueue.main.async {
+
+                        SVProgressHUD.dismiss() {
+                            
+                            let displayColor = UIColor(named: Settings.instance.primaryColorDark) ?? UIColor.green
+                            let textColor = ContrastColorOf(displayColor, returnFlat: true)
+                            SVProgressHUD.setBackgroundColor(displayColor)
+                            SVProgressHUD.setForegroundColor(textColor)
+                            SVProgressHUD.setMinimumDismissTimeInterval(TimeInterval(exactly: 1)!)
+                            SVProgressHUD.showSuccess(withStatus: "Rule added")
+                            self.tableView.reloadData()
+                            self.view.isUserInteractionEnabled = true
+                            self.navigationController?.navigationBar.isUserInteractionEnabled = true
+                            
+                        }
+
+                    }
+
+                }
+
+            }
             
         }
         
@@ -164,7 +211,7 @@ class RulesViewController: UITableViewController, UITextFieldDelegate, UpdateRul
                                  for: .valueChanged)
             cell.accessoryView = switchView
             
-            cell.editingAccessoryType = .detailDisclosureButton
+//            cell.editingAccessoryType = .detailDisclosureButton
             
         }
 
@@ -179,7 +226,45 @@ class RulesViewController: UITableViewController, UITextFieldDelegate, UpdateRul
         tableView.deselectRow(at: indexPath, animated: true)
         
         if tableView.isEditing {
-            performSegue(withIdentifier: "goToEditRule", sender: indexPath)
+            
+//            performSegue(withIdentifier: "goToEditRule", sender: indexPath)
+            guard let rule = ruleStore.allRules?[indexPath.row] else { return }
+            
+            selectedRule = rule
+            
+            let editingAlertController = UIAlertController(title: "Edit Rule Title", message: nil, preferredStyle: .alert)
+            
+            editingAlertController.addTextField() {
+                $0.autocorrectionType = .yes
+                $0.autocapitalizationType = .sentences
+                $0.spellCheckingType = .default
+                $0.text = rule.ruleTitle
+                $0.tag = 0
+                $0.addTarget(editingAlertController, action: #selector(editingAlertController.textDidChangeInEditingRuleAlert), for: .editingChanged)
+                $0.delegate = self
+            }
+            
+            let saveAction = UIAlertAction(title: "Save", style: .default) {
+                action in
+                
+                if let rule = self.ruleStore.allRules?[indexPath.row],
+                    let newTitle = editingAlertController.textFields?[0].text {
+                
+                    let newRule = Rule()
+                    newRule.ruleTitle = newTitle
+                    newRule.rulePattern = rule.rulePattern
+                    self.ruleStore.update(oldRule: rule, newRule: newRule)
+                    self.tableView.reloadData()
+                    
+                }
+                
+            }
+            
+            editingAlertController.addAction(UIAlertAction(title: "Cancel", style: .cancel, handler: nil))
+            editingAlertController.addAction(saveAction)
+            
+            present(editingAlertController, animated: true, completion: nil)
+            
         }
         
     }
@@ -226,10 +311,11 @@ class RulesViewController: UITableViewController, UITextFieldDelegate, UpdateRul
                     action in
                     
                     // remove rule from list of rules
-                    self.ruleStore.delete(at: indexPath.row)
+                    self.ruleStore.delete(rule)
                     
                     // remove rule from table view
                     tableView.deleteRows(at: [indexPath], with: .automatic)
+
                 }
             
                 ac.addAction(deleteAction)
@@ -268,6 +354,24 @@ class RulesViewController: UITableViewController, UITextFieldDelegate, UpdateRul
     func reportSuccess(_ success: Bool) {
         didSuccessfulUpdate = success
     }
+    
+    // MARK: - Observer protocol
+    
+    var id = Int()
+    
+    func update() {
+        
+        DispatchQueue.main.async {
+            
+            let displayColor = UIColor.darkGray
+            let textColor = ContrastColorOf(displayColor, returnFlat: true)
+            SVProgressHUD.setBackgroundColor(displayColor)
+            SVProgressHUD.setForegroundColor(textColor)
+            SVProgressHUD.showProgress(self.numberDirectoryManager.progress, status: "Please wait...\nGenerating block list")
+            
+        }
+        
+    }
 
 }
 
@@ -291,8 +395,54 @@ extension UIAlertController {
             let pattern = textFields?[1].text,
             let action = actions.last {
             action.isEnabled = isValidRule(rule) && isValidNumber(pattern)
+            
+            guard let navController = presentingViewController as? UINavigationController else { return }
+            guard let rulesViewController = navController.topViewController as? RulesViewController else { return }
+            
+            var ruleList = [Rule]()
+            ruleList.append(contentsOf: rulesViewController.ruleStore.allRules!)
+            
+            if (ruleList.contains(where: {$0.ruleTitle == rule || $0.rulePattern == pattern})) {
+                
+                title = "That Rule Already Exists"
+                message = "A rule with this same title or pattern already exists"
+                action.isEnabled = false
+                
+            } else {
+                
+                title = "Add Rule"
+                message = ""
+                
+            }
         }
         
+    }
+    
+    @objc func textDidChangeInEditingRuleAlert() {
+        
+        if let rule = textFields?[0].text {
+            if let action = actions.last {
+                action.isEnabled = isValidRule(rule)
+                
+                guard let navController = presentingViewController as? UINavigationController else { return }
+                guard let rulesViewController = navController.topViewController as? RulesViewController else { return }
+                
+                var ruleList = [Rule]()
+                ruleList.append(contentsOf: rulesViewController.ruleStore.allRules!)
+                
+                if ruleList.contains(where: {$0.ruleTitle == rule}) && rule != rulesViewController.selectedRule?.ruleTitle {
+                    
+                    title = "That Rule Name Already Exists"
+                    action.isEnabled = false
+                    
+                } else {
+                    
+                    title = "Edit Rule Title"
+                    message = ""
+                    
+                }
+            }
+        }
     }
     
 }

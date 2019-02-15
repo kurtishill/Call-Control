@@ -23,7 +23,15 @@ class Settings: Object {
     }
     
     func toggleOverrideContacts() {
-        self.overrideContacts = !self.overrideContacts
+        let realm = try! Realm()
+        
+        do {
+            try realm.write {
+                self.overrideContacts = !self.overrideContacts
+            }
+        } catch {
+            print("Error when updating override contacts \(error)")
+        }
     }
     
     func save() {

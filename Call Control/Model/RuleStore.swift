@@ -12,12 +12,23 @@ import RealmSwift
 class RuleStore: Object {
     var allRules: Results<Rule>?
     
-    @discardableResult func createRule(withTitle title: String, withPattern pattern: String) -> Rule {
+    @discardableResult func createRule(withTitle title: String, withPattern pattern: String, withManager manager: NumberDirectoryManager, onSaving: () -> Void, onCompletion: () -> Void) -> Rule {
         let newRule = Rule()
         newRule.ruleTitle = title
         newRule.rulePattern = pattern
         
+        manager.generateNumbers(forRule: newRule)
+        
+        // special case
+        // additional loading HUD for saving to phone not necessary in this case
+        // race condition can occur between onSaving and onCompletion
+        if pattern.count < 7 {
+            onSaving()
+        }
+        
         save(rule: newRule)
+        
+        onCompletion()
         
         return newRule
     }
@@ -33,9 +44,10 @@ class RuleStore: Object {
         } catch {
             print("Error saving context: \(error)")
         }
+
     }
     
-    func update(oldRule: Rule, newRule: Rule) -> Bool {
+    @discardableResult func update(oldRule: Rule, newRule: Rule) -> Bool {
         if let ruleIndex = allRules?.index(of: oldRule) {
         
             let realm = try! Realm()
@@ -60,19 +72,19 @@ class RuleStore: Object {
         
         let realm = try! Realm()
         
-        allRules = realm.objects(Rule.self)
+        allRules = realm.objects(Rule.self).sorted(byKeyPath: "ruleTitle", ascending: true)
         
     }
     
-    func delete(at index: Int) {
+    func delete(_ rule: Rule) {
         
-        if let ruleForDeletion = allRules?[index]  {
+        if let index = allRules?.index(of: rule)  {
             
             let realm = try! Realm()
             
             do {
                 try realm.write {
-                    realm.delete(ruleForDeletion)
+                    realm.delete((allRules?[index])!)
                 }
             } catch {
                 print("Error deleting rule: \(error)")
