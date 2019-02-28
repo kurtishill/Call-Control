@@ -8,15 +8,29 @@
 
 import UIKit
 import RealmSwift
+import Realm
+import UserNotifications
+import CocoaLumberjack
 
 @UIApplicationMain
-class AppDelegate: UIResponder, UIApplicationDelegate {
+class AppDelegate: UIResponder, UIApplicationDelegate, UNUserNotificationCenterDelegate {
 
     var window: UIWindow?
-
+    
+    public static let realmUrl = Realm.Configuration.defaultConfiguration.fileURL!
 
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
         // Override point for customization after application launch.
+        
+        DDLog.add(DDOSLogger.sharedInstance)
+        
+        DDLogInfo("IN APP DELEGATE")
+        
+//        registerForPushNotifications()
+        
+        let directory: URL = FileManager.default.containerURL(forSecurityApplicationGroupIdentifier: "group.com.kurt.Call-Control")!
+        let realmPath = directory.appendingPathComponent("default.realm")
+        let realmConfig = Realm.Configuration(fileURL: realmPath)
         
         print(Realm.Configuration.defaultConfiguration.fileURL!)
 //        try! FileManager.default.removeItem(at: Realm.Configuration.defaultConfiguration.fileURL!)
@@ -31,6 +45,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         
         // Set up rule store for app
         let ruleStore = RuleStore()
+        ruleStore.realmConfig = realmConfig
         
         let navController = window!.rootViewController as! UINavigationController
         let rulesController = navController.topViewController as! RulesViewController
@@ -43,8 +58,9 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         // Load rules into ruleStore from Realm
         rulesController.ruleStore.load()
         
-        // Load settings from Realm
-        Settings.instance.load()
+        // Save settings into Realm
+        Settings.instance.realmConfig = realmConfig
+        Settings.instance.save()
         
         return true
     }
@@ -65,12 +81,47 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
     func applicationDidBecomeActive(_ application: UIApplication) {
         // Restart any tasks that were paused (or not yet started) while the application was inactive. If the application was previously in the background, optionally refresh the user interface.
+        
+        NumberDirectoryManager.refreshExtensionState()
     }
 
     func applicationWillTerminate(_ application: UIApplication) {
         // Called when the application is about to terminate. Save data if appropriate. See also applicationDidEnterBackground:.
     }
 
+    func registerForPushNotifications() {
+        
+        UNUserNotificationCenter.current().delegate = self
+        UNUserNotificationCenter.current().requestAuthorization(options: [.alert, .sound, .badge]) {
+            (granted, error) in
+            
+            print("Permission granted: \(granted)")
+            
+            guard granted else { return }
+            
+            DispatchQueue.main.async {
+                UIApplication.shared.registerForRemoteNotifications()
+            }
+        }
+        
+    }
+    
+    func application(_ application: UIApplication, didRegisterForRemoteNotificationsWithDeviceToken deviceToken: Data) {
+        
+        let tokenParts = deviceToken.map { data -> String in
+            return String(format: "%02.2hhx", data)
+        }
+        
+        let token = tokenParts.joined()
+        print("Device Token \(token)")
+        
+    }
+    
+    func application(_ application: UIApplication, didFailToRegisterForRemoteNotificationsWithError error: Error) {
+        
+        print("Failed to register for remote notifications with error: \(error)")
+        
+    }
 
 }
 

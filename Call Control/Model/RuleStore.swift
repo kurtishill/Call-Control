@@ -11,6 +11,8 @@ import RealmSwift
 
 class RuleStore: Object {
     var allRules: Results<Rule>?
+    var realmConfig: Realm.Configuration?
+    
     
     @discardableResult func createRule(withTitle title: String, withPattern pattern: String, withManager manager: NumberDirectoryManager, onSaving: () -> Void, onCompletion: () -> Void) -> Rule {
         let newRule = Rule()
@@ -35,12 +37,13 @@ class RuleStore: Object {
     
     func save(rule: Rule) {
         
-        let realm = try! Realm()
+        guard let realm = try? Realm(configuration: realmConfig!) else { return }
         
         do {
             try realm.write {
                 realm.add(rule)
             }
+            NumberDirectoryManager.refreshExtensionState()
         } catch {
             print("Error saving context: \(error)")
         }
@@ -50,7 +53,7 @@ class RuleStore: Object {
     @discardableResult func update(oldRule: Rule, newRule: Rule) -> Bool {
         if let ruleIndex = allRules?.index(of: oldRule) {
         
-            let realm = try! Realm()
+            guard let realm = try? Realm(configuration: realmConfig!) else { return false }
             guard let rule = allRules?[ruleIndex] else { return false }
             
             do {
@@ -70,7 +73,7 @@ class RuleStore: Object {
     
     func load() {
         
-        let realm = try! Realm()
+        guard let realm = try? Realm(configuration: realmConfig!) else { return }
         
         allRules = realm.objects(Rule.self).sorted(byKeyPath: "ruleTitle", ascending: true)
         
@@ -80,12 +83,13 @@ class RuleStore: Object {
         
         if let index = allRules?.index(of: rule)  {
             
-            let realm = try! Realm()
+            guard let realm = try? Realm(configuration: realmConfig!) else { return }
             
             do {
                 try realm.write {
                     realm.delete((allRules?[index])!)
                 }
+                NumberDirectoryManager.refreshExtensionState()
             } catch {
                 print("Error deleting rule: \(error)")
             }
@@ -93,4 +97,5 @@ class RuleStore: Object {
         }
         
     }
+    
 }

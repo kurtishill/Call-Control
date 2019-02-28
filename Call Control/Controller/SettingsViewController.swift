@@ -67,6 +67,11 @@ class SettingsViewController: UITableViewController, AppSystemColorSettingsCellD
             
             cell.textLabel!.text = "Override contacts"
             
+            cell.detailTextLabel!.text = "*Permission must be enabled in settings"
+            cell.detailTextLabel!.adjustsFontForContentSizeCategory = true
+            cell.detailTextLabel!.adjustsFontSizeToFitWidth = true
+            cell.detailTextLabel!.textColor = UIColor.lightGray
+            
             cell.selectionStyle = .none
             
             let switchView: UISwitch = UISwitch()
@@ -112,13 +117,29 @@ class SettingsViewController: UITableViewController, AppSystemColorSettingsCellD
         
         tableView.deselectRow(at: indexPath, animated: true)
         
+        if indexPath.row == 0 {
+            guard let settingsUrl = URL(string: UIApplication.openSettingsURLString) else {
+                return
+            }
+            
+            if UIApplication.shared.canOpenURL(settingsUrl) {
+                UIApplication.shared.open(settingsUrl, completionHandler: { (success) in
+                    print("Settings opened: \(success)") // Prints true
+                })
+            }
+        }
+        
     }
     
     @objc func overrideContactsToggled() {
         
-        Settings.instance.toggleOverrideContacts()
+        let result = Settings.instance.toggleOverrideContacts()
         
         Settings.instance.save()
+        
+        if result {
+            NumberDirectoryManager.refreshExtensionState()
+        }
         
     }
     

@@ -8,86 +8,136 @@
 
 import Foundation
 import CallKit
+import RealmSwift
+import Realm
+import CocoaLumberjack
+import Contacts
 
 class CallDirectoryHandler: CXCallDirectoryProvider {
+    
+    deinit {
+        DDLog.remove(DDOSLogger.sharedInstance)
+    }
+    
+    override init() {
+        DDLog.add(DDOSLogger.sharedInstance)
+    }
+    
+    lazy var contacts: [CNContact] = {
+        let contactStore = CNContactStore()
+        let keysToFetch = [
+            CNContactFormatter.descriptorForRequiredKeys(for: .fullName),
+            CNContactEmailAddressesKey,
+            CNContactPhoneNumbersKey,
+            CNContactImageDataAvailableKey,
+            CNContactThumbnailImageDataKey] as [Any]
+        
+        // Get all the containers
+        var allContainers: [CNContainer] = []
+        do {
+            allContainers = try contactStore.containers(matching: nil)
+        } catch {
+            print("Error fetching containers")
+        }
+        
+        var results: [CNContact] = []
+        
+        // Iterate all containers and append their contacts to our results array
+        for container in allContainers {
+            let fetchPredicate = CNContact.predicateForContactsInContainer(withIdentifier: container.identifier)
+            
+            do {
+                let containerResults = try contactStore.unifiedContacts(matching: fetchPredicate, keysToFetch: keysToFetch as! [CNKeyDescriptor])
+                results.append(contentsOf: containerResults)
+            } catch {
+                print("Error fetching results for container")
+            }
+        }
+        
+        return results
+    }()
+    
+    func addRulesWithoutOverridingContacts(rules: Results<Rule>, contacts: [Int:String], context: CXCallDirectoryExtensionContext) {
+        var numbersBlocked = 0
+        for rule in rules {
+            for number in rule.blockList.sorted(by: <) {
+                let numberString = number.description
+                if !contacts.keys.contains(numberString.hashValue) {
+                    context.addBlockingEntry(withNextSequentialPhoneNumber: number)
+                    numbersBlocked += 1
+                }
+            }
+            
+            DDLogInfo("Blocked \(numbersBlocked) numbers")
+        }
+    }
+    
+    func addRulesWithOverridingContacts(rules: Results<Rule>, context: CXCallDirectoryExtensionContext) {
+        for rule in rules {
+            for number in rule.blockList.sorted(by: <) {
+                context.addBlockingEntry(withNextSequentialPhoneNumber: number)
+            }
+            
+            DDLogInfo("Blocked \(rule.blockList.count) numbers")
+        }
+    }
 
     override func beginRequest(with context: CXCallDirectoryExtensionContext) {
         context.delegate = self
+        
+        let directory: URL = FileManager.default.containerURL(forSecurityApplicationGroupIdentifier: "group.com.kurt.Call-Control")!
+        let realmPath = directory.appendingPathComponent("default.realm")
+        let realmConfig = Realm.Configuration(fileURL: realmPath)
+        
+        guard let realm = try? Realm(configuration: realmConfig) else {
+            DDLogWarn("CallDirectoryHandler: Failure initializing Realm")
+            context.completeRequest()
+            return
+        }
 
         // Check whether this is an "incremental" data request. If so, only provide the set of phone number blocking
         // and identification entries which have been added or removed since the last time this extension's data was loaded.
         // But the extension must still be prepared to provide the full set of data at any time, so add all blocking
         // and identification phone numbers if the request is not incremental.
-        if context.isIncremental {
-            addOrRemoveIncrementalBlockingPhoneNumbers(to: context)
+        if #available(iOSApplicationExtension 11.0, *) {
+            if context.isIncremental {
+                context.removeAllBlockingEntries()
+            }
+        }
 
-            addOrRemoveIncrementalIdentificationPhoneNumbers(to: context)
-        } else {
-            addAllBlockingPhoneNumbers(to: context)
-
-            addAllIdentificationPhoneNumbers(to: context)
+        DDLogInfo("WE ARE HERE")
+        
+        let rules = realm.objects(Rule.self).filter("active == true")
+        
+        let settings = realm.objects(Settings.self).first
+        
+        var contactsNumbers = [Int:String]()
+        
+        let overrideContacts = settings!.overrideContacts
+        
+        if rules.count > 0 && !overrideContacts {
+            for contact in contacts {
+                for phoneNumber in contact.phoneNumbers {
+                    let numberObject = phoneNumber.value
+                    var number = numberObject.stringValue.filter("01234567890".contains)
+                    if number[number.startIndex] != "1" && number.count == 10 {
+                        number = "1" + number
+                    }
+                    contactsNumbers[number.hashValue] = number
+                    print(number)
+                }
+            }
+        }
+        
+        if rules.count > 0 {
+            if overrideContacts {
+                addRulesWithOverridingContacts(rules: rules, context: context)
+            } else {
+                addRulesWithoutOverridingContacts(rules: rules, contacts: contactsNumbers, context: context)
+            }
         }
 
         context.completeRequest()
-    }
-
-    private func addAllBlockingPhoneNumbers(to context: CXCallDirectoryExtensionContext) {
-        // Retrieve all phone numbers to block from data store. For optimal performance and memory usage when there are many phone numbers,
-        // consider only loading a subset of numbers at a given time and using autorelease pool(s) to release objects allocated during each batch of numbers which are loaded.
-        //
-        // Numbers must be provided in numerically ascending order.
-        let allPhoneNumbers: [CXCallDirectoryPhoneNumber] = [ 1_408_555_5555, 1_800_555_5555 ]
-        for phoneNumber in allPhoneNumbers {
-            context.addBlockingEntry(withNextSequentialPhoneNumber: phoneNumber)
-        }
-    }
-
-    private func addOrRemoveIncrementalBlockingPhoneNumbers(to context: CXCallDirectoryExtensionContext) {
-        // Retrieve any changes to the set of phone numbers to block from data store. For optimal performance and memory usage when there are many phone numbers,
-        // consider only loading a subset of numbers at a given time and using autorelease pool(s) to release objects allocated during each batch of numbers which are loaded.
-        let phoneNumbersToAdd: [CXCallDirectoryPhoneNumber] = [ 1_408_555_1234 ]
-        for phoneNumber in phoneNumbersToAdd {
-            context.addBlockingEntry(withNextSequentialPhoneNumber: phoneNumber)
-        }
-
-        let phoneNumbersToRemove: [CXCallDirectoryPhoneNumber] = [ 1_800_555_5555 ]
-        for phoneNumber in phoneNumbersToRemove {
-            context.removeBlockingEntry(withPhoneNumber: phoneNumber)
-        }
-
-        // Record the most-recently loaded set of blocking entries in data store for the next incremental load...
-    }
-
-    private func addAllIdentificationPhoneNumbers(to context: CXCallDirectoryExtensionContext) {
-        // Retrieve phone numbers to identify and their identification labels from data store. For optimal performance and memory usage when there are many phone numbers,
-        // consider only loading a subset of numbers at a given time and using autorelease pool(s) to release objects allocated during each batch of numbers which are loaded.
-        //
-        // Numbers must be provided in numerically ascending order.
-        let allPhoneNumbers: [CXCallDirectoryPhoneNumber] = [ 1_877_555_5555, 1_888_555_5555 ]
-        let labels = [ "Telemarketer", "Local business" ]
-
-        for (phoneNumber, label) in zip(allPhoneNumbers, labels) {
-            context.addIdentificationEntry(withNextSequentialPhoneNumber: phoneNumber, label: label)
-        }
-    }
-
-    private func addOrRemoveIncrementalIdentificationPhoneNumbers(to context: CXCallDirectoryExtensionContext) {
-        // Retrieve any changes to the set of phone numbers to identify (and their identification labels) from data store. For optimal performance and memory usage when there are many phone numbers,
-        // consider only loading a subset of numbers at a given time and using autorelease pool(s) to release objects allocated during each batch of numbers which are loaded.
-        let phoneNumbersToAdd: [CXCallDirectoryPhoneNumber] = [ 1_408_555_5678 ]
-        let labelsToAdd = [ "New local business" ]
-
-        for (phoneNumber, label) in zip(phoneNumbersToAdd, labelsToAdd) {
-            context.addIdentificationEntry(withNextSequentialPhoneNumber: phoneNumber, label: label)
-        }
-
-        let phoneNumbersToRemove: [CXCallDirectoryPhoneNumber] = [ 1_888_555_5555 ]
-
-        for phoneNumber in phoneNumbersToRemove {
-            context.removeIdentificationEntry(withPhoneNumber: phoneNumber)
-        }
-
-        // Record the most-recently loaded set of identification entries in data store for the next incremental load...
     }
 
 }

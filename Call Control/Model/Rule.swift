@@ -17,10 +17,21 @@ class Rule: Object {
     @objc dynamic var active: Bool = true
     let blockList = List<CXCallDirectoryPhoneNumber>()
     
+    public override var description: String {
+        
+        return "Title: \(ruleTitle)" +
+        "Pattern: \(rulePattern)" +
+        "Active: \(active ? "Yes" : "No")" +
+        "Num Rules: \(blockList.count)"
+        
+    }
+    
     static func ==(lhs: Rule, rhs: Rule) -> Bool {
         
         return lhs.ruleTitle == rhs.ruleTitle || lhs.rulePattern == rhs.rulePattern
         
     }
+    
+    
     
 }

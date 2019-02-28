@@ -12,31 +12,43 @@ import RealmSwift
 class Settings: Object {
     
     static let instance: Settings = Settings()
+    var realmConfig: Realm.Configuration?
 
     @objc dynamic var overrideContacts: Bool = false
     @objc dynamic var primaryColor: String = "PrimaryGreen"
     @objc dynamic var primaryColorDark: String = "PrimaryDarkGreen"
     
     func changePrimaryColor(withPrimary primary: String, withPrimaryDark primaryDark: String) {
-        self.primaryColor = primary
-        self.primaryColorDark = primaryDark
+        let realm = try! Realm(configuration: realmConfig!)
+            
+        do {
+            try realm.write {
+                self.primaryColor = primary
+                self.primaryColorDark = primaryDark
+            }
+        } catch {
+            print("Error when updating primary color \(error)")
+        }
+        
     }
     
-    func toggleOverrideContacts() {
-        let realm = try! Realm()
+    func toggleOverrideContacts() -> Bool {
+        let realm = try! Realm(configuration: realmConfig!)
         
         do {
             try realm.write {
                 self.overrideContacts = !self.overrideContacts
             }
+            return true
         } catch {
             print("Error when updating override contacts \(error)")
+            return false
         }
     }
     
     func save() {
         
-        let realm = try! Realm()
+        let realm = try! Realm(configuration: realmConfig!)
         
         if let settings = realm.objects(Settings.self).first {
             
@@ -67,7 +79,7 @@ class Settings: Object {
     
     func load() {
         
-        let realm = try! Realm()
+        let realm = try! Realm(configuration: realmConfig!)
         
         if let settings = realm.objects(Settings.self).first {
             

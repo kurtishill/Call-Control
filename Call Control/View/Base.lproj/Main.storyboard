@@ -213,7 +213,6 @@
                         </rightBarButtonItems>
                     </navigationItem>
                     <connections>
-                        <segue destination="DR0-Kn-NBY" kind="show" identifier="goToEditRule" id="TRi-OS-vyD"/>
                         <segue destination="xy5-ac-AZd" kind="presentation" identifier="goToSplashScreen" id="tSN-a5-wfW"/>
                     </connections>
                 </tableViewController>
@@ -238,12 +237,28 @@
                                     <autoresizingMask key="autoresizingMask"/>
                                 </tableViewCellContentView>
                             </tableViewCell>
-                            <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" selectionStyle="default" indentationWidth="10" reuseIdentifier="overrideContactsCell" id="jlu-C9-qdy">
+                            <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" selectionStyle="default" indentationWidth="10" reuseIdentifier="overrideContactsCell" textLabel="ZYA-LO-S52" detailTextLabel="Fao-8Y-TCt" style="IBUITableViewCellStyleSubtitle" id="jlu-C9-qdy">
                                 <rect key="frame" x="0.0" y="110.5" width="414" height="55"/>
                                 <autoresizingMask key="autoresizingMask"/>
                                 <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" preservesSuperviewLayoutMargins="YES" insetsLayoutMarginsFromSafeArea="NO" tableViewCell="jlu-C9-qdy" id="Akm-tv-PqZ">
                                     <rect key="frame" x="0.0" y="0.0" width="414" height="54.5"/>
                                     <autoresizingMask key="autoresizingMask"/>
+                                    <subviews>
+                                        <label opaque="NO" multipleTouchEnabled="YES" contentMode="left" insetsLayoutMarginsFromSafeArea="NO" text="Title" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="ZYA-LO-S52">
+                                            <rect key="frame" x="20" y="10" width="33.5" height="20.5"/>
+                                            <autoresizingMask key="autoresizingMask"/>
+                                            <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                            <nil key="textColor"/>
+                                            <nil key="highlightedColor"/>
+                                        </label>
+                                        <label opaque="NO" multipleTouchEnabled="YES" contentMode="left" insetsLayoutMarginsFromSafeArea="NO" text="Subtitle" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="Fao-8Y-TCt">
+                                            <rect key="frame" x="20" y="30.5" width="44" height="14.5"/>
+                                            <autoresizingMask key="autoresizingMask"/>
+                                            <fontDescription key="fontDescription" type="system" pointSize="12"/>
+                                            <nil key="textColor"/>
+                                            <nil key="highlightedColor"/>
+                                        </label>
+                                    </subviews>
                                 </tableViewCellContentView>
                             </tableViewCell>
                             <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" selectionStyle="default" indentationWidth="10" reuseIdentifier="colorSettingsCell" id="2wz-FM-xBS" userLabel="colorSettingsCell" customClass="AppSystemColorSettingsCell" customModule="Call_Control" customModuleProvider="target">
@@ -319,81 +334,6 @@
                 <placeholder placeholderIdentifier="IBFirstResponder" id="ctk-7D-obe" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
             <point key="canvasLocation" x="2271" y="-278"/>
-        </scene>
-        <!--Edit Rule View Controller-->
-        <scene sceneID="OAo-yj-Ay8">
-            <objects>
-                <viewController id="DR0-Kn-NBY" customClass="EditRuleViewController" customModule="Call_Control" customModuleProvider="target" sceneMemberID="viewController">
-                    <view key="view" contentMode="scaleToFill" id="NNI-mS-0qu">
-                        <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
-                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
-                        <subviews>
-                            <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" distribution="fillEqually" spacing="12" translatesAutoresizingMaskIntoConstraints="NO" id="ArD-6r-3YL">
-                                <rect key="frame" x="77" y="338" width="260" height="220"/>
-                                <subviews>
-                                    <textField opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" textAlignment="center" minimumFontSize="17" clearButtonMode="whileEditing" translatesAutoresizingMaskIntoConstraints="NO" id="ucc-6N-69Y">
-                                        <rect key="frame" x="0.0" y="0.0" width="260" height="46"/>
-                                        <nil key="textColor"/>
-                                        <fontDescription key="fontDescription" type="system" pointSize="25"/>
-                                        <textInputTraits key="textInputTraits"/>
-                                    </textField>
-                                    <textField opaque="NO" tag="1" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" textAlignment="center" minimumFontSize="17" clearButtonMode="whileEditing" translatesAutoresizingMaskIntoConstraints="NO" id="GEd-LU-ZQc">
-                                        <rect key="frame" x="0.0" y="58" width="260" height="46"/>
-                                        <nil key="textColor"/>
-                                        <fontDescription key="fontDescription" type="system" pointSize="35"/>
-                                        <textInputTraits key="textInputTraits"/>
-                                    </textField>
-                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="center" lineBreakMode="clip" numberOfLines="0" baselineAdjustment="alignBaselines" minimumScaleFactor="0.5" translatesAutoresizingMaskIntoConstraints="NO" id="J6Y-xm-BQl">
-                                        <rect key="frame" x="0.0" y="116" width="260" height="46"/>
-                                        <fontDescription key="fontDescription" type="system" pointSize="15"/>
-                                        <color key="textColor" white="0.33333333333333331" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
-                                        <nil key="highlightedColor"/>
-                                    </label>
-                                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="cv3-A4-fWY" customClass="RoundedButton" customModule="Call_Control" customModuleProvider="target">
-                                        <rect key="frame" x="0.0" y="174" width="260" height="46"/>
-                                        <color key="backgroundColor" white="0.66666666666666663" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
-                                        <state key="normal" title="Save">
-                                            <color key="titleColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
-                                        </state>
-                                        <userDefinedRuntimeAttributes>
-                                            <userDefinedRuntimeAttribute type="boolean" keyPath="rounded" value="YES"/>
-                                        </userDefinedRuntimeAttributes>
-                                        <connections>
-                                            <action selector="saveButtonTapped:" destination="DR0-Kn-NBY" eventType="touchUpInside" id="3Tn-9p-Myy"/>
-                                        </connections>
-                                    </button>
-                                </subviews>
-                                <constraints>
-                                    <constraint firstAttribute="width" secondItem="ArD-6r-3YL" secondAttribute="height" multiplier="13:11" id="fC6-Cc-EGx"/>
-                                </constraints>
-                            </stackView>
-                        </subviews>
-                        <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
-                        <gestureRecognizers/>
-                        <constraints>
-                            <constraint firstItem="ArD-6r-3YL" firstAttribute="centerX" secondItem="NNI-mS-0qu" secondAttribute="centerX" id="2wz-hq-ABi"/>
-                            <constraint firstItem="ArD-6r-3YL" firstAttribute="centerY" secondItem="NNI-mS-0qu" secondAttribute="centerY" id="RH9-YR-wbI"/>
-                        </constraints>
-                        <viewLayoutGuide key="safeArea" id="Q4D-LU-WIl"/>
-                        <connections>
-                            <outletCollection property="gestureRecognizers" destination="Uar-X5-b3R" appends="YES" id="qnJ-tX-GeO"/>
-                        </connections>
-                    </view>
-                    <connections>
-                        <outlet property="patternDescriptionLabel" destination="J6Y-xm-BQl" id="rYm-Os-bND"/>
-                        <outlet property="rulePatternTextField" destination="GEd-LU-ZQc" id="LY0-Bq-crP"/>
-                        <outlet property="ruleTitleTextField" destination="ucc-6N-69Y" id="CGD-Sj-UgY"/>
-                        <outlet property="saveButton" destination="cv3-A4-fWY" id="WdS-Ty-1BX"/>
-                    </connections>
-                </viewController>
-                <placeholder placeholderIdentifier="IBFirstResponder" id="Zov-pQ-Obc" userLabel="First Responder" sceneMemberID="firstResponder"/>
-                <tapGestureRecognizer id="Uar-X5-b3R">
-                    <connections>
-                        <action selector="backgroundTapped:" destination="DR0-Kn-NBY" id="nLm-mg-Kt8"/>
-                    </connections>
-                </tapGestureRecognizer>
-            </objects>
-            <point key="canvasLocation" x="825" y="958"/>
         </scene>
         <!--Navigation Controller-->
         <scene sceneID="NfV-ke-yO8">

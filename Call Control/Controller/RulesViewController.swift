@@ -10,6 +10,7 @@ import UIKit
 import ChameleonFramework
 import RealmSwift
 import SVProgressHUD
+import CallKit
 
 class RulesViewController: UITableViewController, UITextFieldDelegate, UpdateRuleDelegate, Observer {
     
@@ -274,14 +275,13 @@ class RulesViewController: UITableViewController, UITextFieldDelegate, UpdateRul
     @objc func switchChanged(_ sender: UISwitch) {
         
         if let rule = ruleStore.allRules?[sender.tag] {
-            let realm = try! Realm()
-            do {
-                try realm.write {
-                    rule.active = !rule.active
-                }
-            } catch {
-                print("Error saving active status \(error)")
-            }
+            
+            let newRule: Rule = Rule()
+            newRule.ruleTitle = rule.ruleTitle
+            newRule.rulePattern = rule.rulePattern
+            newRule.active = !rule.active
+            
+            ruleStore.update(oldRule: rule, newRule: newRule)
             
         }
         

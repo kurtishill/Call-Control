@@ -80,7 +80,7 @@ class NumberDirectoryManager {
 
             let finalNumber = callingCode + cleanPattern + n
 
-            list.append(Int64(finalNumber)!)
+            list.append(CXCallDirectoryPhoneNumber(finalNumber)!)
 
             if num == intervalToSendUpdate - 1 {
                 progress = Float(num + 1) / Float(topNumber)
@@ -93,4 +93,55 @@ class NumberDirectoryManager {
         
     }
     
+    static func refreshExtensionState() {
+        CXCallDirectoryManager.sharedInstance.reloadExtension(withIdentifier: "com.kurt.Call-Control.Call-Block-Extension") { (reloadError) in
+            if let error = reloadError as? CXErrorCodeCallDirectoryManagerError {
+                print("Error reloading CXCallDirectoryManager extension: \(error.localizedDescription) \"\(error.code)\"")
+            } else {
+                print("Reloaded CXCallDirectoryManager extension.")
+            }
+            CXCallDirectoryManager.sharedInstance.getEnabledStatusForExtension(withIdentifier: "com.kurt.Call-Control.Call-Block-Extension") { (status, statusError) in
+                if let error = statusError {
+                    print("Error getting status for CXCallDirectoryManager extension: \(error.localizedDescription)")
+                } else {
+                    print("Got status for CXCallDirectoryManager extension: \(status)")
+                }
+                DispatchQueue.main.async {
+                    // show warning if enabled with error
+                    if status != .disabled,
+                        reloadError != nil || statusError != nil {
+                        print("error")
+                    } else {
+                        print("enabled")
+                    }
+                }
+            }
+        }
+    }
+    
+}
+
+extension CXErrorCodeCallDirectoryManagerError.Code: CustomStringConvertible {
+    public var description: String {
+        switch self {
+        case .unknown:
+            return "An unknown error occurred."
+        case .noExtensionFound:
+            return "The call directory manager could not find a corresponding app extension."
+        case .loadingInterrupted:
+            return "The call directory manager was interrupted while loading the app extension."
+        case .entriesOutOfOrder:
+            return "The entries in the call directory are out of order."
+        case .duplicateEntries:
+            return "There are duplicate entries in the call directory."
+        case .maximumEntriesExceeded:
+            return "There are too many entries in the call directory."
+        case .extensionDisabled:
+            return "The call directory extension isn’t enabled by the system."
+        case .currentlyLoading:
+            return "currentlyLoading"
+        case .unexpectedIncrementalRemoval:
+            return "expectedIncrementalRemoval"
+        }
+    }
 }
